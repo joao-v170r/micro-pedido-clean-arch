@@ -1,51 +1,58 @@
+version: '3.8'
+
 services:
-  app:
+  pedido-app:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: spring-microservice
+    container_name: pedido-app
     ports:
-      - "8080:8080"
+      - "8081:8081"
     environment:
-      - SPRING_DATA_MONGODB_URI=mongodb://admin:admin123@mongodb:27017/microservice_db?authSource=admin
+      - SPRING_DATA_MONGODB_URI=mongodb://admin:admin123@mongodb-pedido:27017/db_pedido?authSource=admin
+      - SPRING_PROFILES_ACTIVE=prod
+      - CLIENTE_SERVICE_URL=http://cliente-app:8080
     depends_on:
-      - mongodb
+      mongodb-pedido:
+        condition: service_healthy
     networks:
-      - spring-mongo-network
+      - pedido-network
+      - microservices-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
-  mongodb:
+  mongodb-pedido:
     image: mongo:7.0
-    container_name: mongodb
+    container_name: mongodb-pedido
     ports:
-      - "27017:27017"
+      - "27018:27017"  # Porta externa 27018 → Interna 27017
     volumes:
-      - mongodb_data:/data/db
+      - mongodb_pedido_data:/data/db
       - ./mongo-init:/docker-entrypoint-initdb.d
     environment:
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=admin123
+      - MONGO_INITDB_DATABASE=db_pedido
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 30s
+      retries: 5
     networks:
-      - spring-mongo-network
-
-  mongo-express:
-    image: mongo-express:1.0
-    container_name: mongo-express
-    ports:
-      - "8081:8081"
-    environment:
-      - ME_CONFIG_MONGODB_SERVER=mongodb
-      - ME_CONFIG_MONGODB_ADMINUSERNAME=admin
-      - ME_CONFIG_MONGODB_ADMINPASSWORD=admin123
-      - ME_CONFIG_BASICAUTH_USERNAME=user
-      - ME_CONFIG_BASICAUTH_PASSWORD=user123
-    depends_on:
-      - mongodb
-    networks:
-      - spring-mongo-network
+      - pedido-network
+    restart: unless-stopped
 
 networks:
-  spring-mongo-network:
+  pedido-network:
     driver: bridge
+    name: pedido-network  # Nome explícito para conexão entre serviços
+  microservices-net:
+    external: true
+
 
 volumes:
-  mongodb_data:
+  mongodb_pedido_data:
