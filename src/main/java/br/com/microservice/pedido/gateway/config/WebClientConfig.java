@@ -44,10 +44,32 @@ public class WebClientConfig {
                 .build();
     }
 
-    @Bean(name = "produtoWebClient")
+    @Bean(name = "pagamentoWebClient")
+    public WebClient pagamentoWebClient(
+            WebClient.Builder builder,
+            @Value("${microservices.pagamento.url}") String baseUrl
+    ) {
+        return builder
+                .baseUrl(baseUrl)
+                .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+                .clientConnector(
+                        new ReactorClientHttpConnector(
+                                HttpClient.create()
+                                        .responseTimeout(Duration.ofMillis(5000))
+                                        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
+                        )
+                )
+                .filter(
+                        (request, next) -> next.exchange(request)
+                                .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(1))
+                                ).timeout(Duration.ofSeconds(5)))
+                .build();
+    }
+
+    /*@Bean(name = "produtoWebClient")
     public WebClient produtoWebClient(
             WebClient.Builder builder,
-            @Value("${microservices.prduto.url}") String baseUrl
+            @Value("${microservices.produto.url}") String baseUrl
     ) {
         return builder
                 .baseUrl(baseUrl)
@@ -64,5 +86,5 @@ public class WebClientConfig {
                         .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(1))
                 ).timeout(Duration.ofSeconds(5)))
                 .build();
-    }
+    }*/
 }

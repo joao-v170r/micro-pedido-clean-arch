@@ -12,7 +12,8 @@ import java.util.UUID;
 @Getter
 public class Pedido {
     private final String id;
-    private final String reciboPagamento;
+    @Setter
+    private String reciboPagamento;
     private final DadosCliente cliente;
     private final LocalDateTime dataCriacao;
     private final Set<ProdutoPedido> produtos;
@@ -61,7 +62,7 @@ public class Pedido {
             produtos,
             dataCriacao,
             cliente,
-            UUID.randomUUID().toString(),
+            null,
             null
         );
     }
@@ -101,7 +102,16 @@ public class Pedido {
         if(dataCriacao.isAfter(LocalDateTime.now())) {
             throw new IllegalArgumentException("Data de criação do pedido não pode ser uma data futura");
         }
-
         return dataCriacao;
+    }
+
+    public BigDecimal getValorTotal() {
+        BigDecimal valorTotal = frete;
+
+        produtos.forEach(produto -> {
+            valorTotal.add(produto.preco().multiply(new BigDecimal(produto.quantidade())));
+        });
+
+        return valorTotal;
     }
 }

@@ -7,7 +7,10 @@ import br.com.microservice.pedido.dto.PedidoDTO;
 import br.com.microservice.pedido.dto.usecase.InputCreatePedidoDTO;
 import br.com.microservice.pedido.gateway.ClienteGateway;
 import br.com.microservice.pedido.gateway.CrudPedidoGateway;
+import br.com.microservice.pedido.gateway.PagamentoGateway;
+import br.com.microservice.pedido.gateway.dto.InputSolicitaPagamentoDTO;
 import br.com.microservice.pedido.gateway.dto.OutputClienteDTO;
+import br.com.microservice.pedido.gateway.dto.OutputPagamentoDTO;
 import br.com.microservice.pedido.usecase.mapper.PedidoMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,9 +27,11 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class CreatePedidoUseCase {
 
-    private final PagamentoExternalGateway gatewayPagamento;
+    private final PagamentoGateway gatewayPagamento;
+    private final ClienteGateway gatewayCliente;
     /*private final ProdutoGateway gatewayProduto;*/
-    private final CrudPagamentoGateway gateway;
+    /*private final ProdutoGateway gatewayProduto;*/
+    private final CrudPedidoGateway gateway;
     private final ObjectMapper mapper;
 
     public PedidoDTO create(InputCreatePedidoDTO input) {
@@ -43,6 +48,7 @@ public class CreatePedidoUseCase {
                 clienteDTO.cpf(),
                 clienteDTO.email()
         );
+
         input.produtos().forEach(idProduto -> {
             /*OutputProdutoDTO produtoDTO = gatewayProduto.findById(idProduto);*/
             produtoPedidos.add(new ProdutoPedido(
@@ -65,6 +71,20 @@ public class CreatePedidoUseCase {
         } catch (JsonProcessingException e) {
             log.info("<<CREATE.PEDIDO>> criando peidod. houve um error ao transforma o pedido em json");
         }
+
+        pedido = gateway.save(pedido);
+
+        log.info("<<CREATE.PEDIDO>> cria pagamento");
+        OutputPagamentoDTO outputPagamento = gatewayPagamento.solicitaPagamento(new InputSolicitaPagamentoDTO(
+            dadosCliente.idCliente(),
+            pedido.getId(),
+            pedido.getMetodoPagamento(),
+            pedido.getValorTotal()
+
+        ));
+
+        pedido.setReciboPagamento(outputPagamento.id());
+
         return PedidoMapper.toDTO(gateway.save(pedido));
     }
 }

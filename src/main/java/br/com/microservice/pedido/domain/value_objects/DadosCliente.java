@@ -13,7 +13,7 @@ public record DadosCliente(
         if(nomeCliente == null || nomeCliente.isBlank()) {
             throw new IllegalArgumentException("nome do cliente invalido");
         }
-        if(cpf == null || cpf.length() != 11) {
+        if(cpf == null || cpf.isBlank()) {
             throw new IllegalArgumentException("cpf esta invalido");
         }
         if(email == null || email.isBlank()) {
