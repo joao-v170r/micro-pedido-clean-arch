@@ -25,7 +25,8 @@ public class PagamentoRestAdapter implements PagamentoGateway {
                 .bodyToMono(OutputPagamentoDTO.class)
                 .blockOptional()
                 .orElseThrow(
-                        () -> new ProdutoRestAdapterExeception.ProdutoNotFound("não foi possivel processar o pagamento")
+                        () -> new ProdutoRestAdapterExeception
+                                .ProdutoNotFound("não foi possivel processar o pagamento")
                 );
     }
 }

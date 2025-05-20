@@ -41,7 +41,11 @@ public class CreatePedidoUseCase {
 
         log.info("<<CREATE.PEDIDO>> buscando dados de cliente");
         OutputClienteDTO clienteDTO = gatewayCliente.findById(input.idCliente());
-
+        try {
+            log.info("<<CREATE.PEDIDO>> dados de cliente recebido: {}", mapper.writeValueAsString(clienteDTO));
+        } catch (Exception e) {
+            log.error("<<CREATE.PEDIDO>> houve um problema ao criar um json do retorno da busca de cliente");
+        }
         DadosCliente dadosCliente = new DadosCliente(
                 clienteDTO.id(),
                 clienteDTO.nome(),
@@ -49,6 +53,7 @@ public class CreatePedidoUseCase {
                 clienteDTO.email()
         );
 
+        log.info("<<CREATE.PEDIDO>> montando dados de produto");
         input.produtos().forEach(idProduto -> {
             /*OutputProdutoDTO produtoDTO = gatewayProduto.findById(idProduto);*/
             produtoPedidos.add(new ProdutoPedido(
@@ -66,25 +71,32 @@ public class CreatePedidoUseCase {
             input.frete(),
             input.metodoPagamento()
         );
+
         try {
             log.info("<<CREATE.PEDIDO>> criando pedido: {}", mapper.writeValueAsString(pedido));
         } catch (JsonProcessingException e) {
-            log.info("<<CREATE.PEDIDO>> criando peidod. houve um error ao transforma o pedido em json");
+            log.info("<<CREATE.PEDIDO>> criando pedido. houve um error ao transforma o pedido em json");
         }
 
         pedido = gateway.save(pedido);
 
-        log.info("<<CREATE.PEDIDO>> cria pagamento");
+        log.info("<<CREATE.PEDIDO>> solicitando pagamento");
         OutputPagamentoDTO outputPagamento = gatewayPagamento.solicitaPagamento(new InputSolicitaPagamentoDTO(
             dadosCliente.idCliente(),
             pedido.getId(),
             pedido.getMetodoPagamento(),
             pedido.getValorTotal()
-
         ));
+
+        try {
+            log.info("<<CREATE.PEDIDO>> retorno do pagamento: {}", mapper.writeValueAsString(outputPagamento));
+        } catch (JsonProcessingException e) {
+            log.info("<<CREATE.PEDIDO>> houve um error ao criar um json do retorno do pagamento");
+        }
 
         pedido.setReciboPagamento(outputPagamento.id());
 
+        log.info("<<CREATE.PEDIDO>> fim criação pedido");
         return PedidoMapper.toDTO(gateway.save(pedido));
     }
 }
