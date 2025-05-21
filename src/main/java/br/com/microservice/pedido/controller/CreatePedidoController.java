@@ -1,4 +1,4 @@
-package br.com.microservice.pedido.controler;
+package br.com.microservice.pedido.controller;
 
 import br.com.microservice.pedido.dto.PedidoDTO;
 import br.com.microservice.pedido.dto.rest_controller.RequestCreatePedidoController;
