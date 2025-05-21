@@ -2,7 +2,6 @@ package br.com.microservice.pedido.gateway.adapter;
 
 import br.com.microservice.pedido.gateway.PagamentoGateway;
 import br.com.microservice.pedido.gateway.dto.InputSolicitaPagamentoDTO;
-import br.com.microservice.pedido.gateway.dto.OutputClienteDTO;
 import br.com.microservice.pedido.gateway.dto.OutputPagamentoDTO;
 import br.com.microservice.pedido.gateway.exception.adapter.ProdutoRestAdapterExeception;
 import lombok.RequiredArgsConstructor;

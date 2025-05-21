@@ -1,8 +1,5 @@
 package br.com.microservice.pedido.gateway.database.mongo;
 
-import br.com.microservice.pedido.domain.Pedido;
-import br.com.microservice.pedido.gateway.database.mongo.entity.PedidoEntity;
-import br.com.microservice.pedido.gateway.database.mongo.mapper.PedidoGatewayMapper;
 import br.com.microservice.pedido.gateway.database.mongo.repository.PedidoRepository;
 import br.com.microservice.pedido.gateway.exception.mongo.GatewayExceptionMongo;
 import org.junit.jupiter.api.Assertions;
@@ -12,12 +9,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-
-import java.util.List;
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
