@@ -1,6 +1,7 @@
 package br.com.microservice.pedido.gateway.database.mongo;
 
 import br.com.microservice.pedido.domain.Pedido;
+import br.com.microservice.pedido.domain.value_objects.StatusPedido;
 import br.com.microservice.pedido.gateway.CrudPedidoGateway;
 import br.com.microservice.pedido.gateway.database.mongo.entity.PedidoEntity;
 import br.com.microservice.pedido.gateway.database.mongo.mapper.PedidoGatewayMapper;
@@ -33,6 +34,22 @@ public class PedidoMongoGateway implements CrudPedidoGateway {
             return opPedido.map(PedidoGatewayMapper::toDomain);
         } catch (Exception e) {
             log.error("houve um error ao buscar um pedido, error: {}", e.getMessage());
+            throw new GatewayExceptionMongo("error ao buscar um pedido por id", e);
+        }
+    }
+
+    @Override
+    public List<Pedido> findAllWithStatus(StatusPedido status) {
+
+        if(status == null) {
+            throw new IllegalArgumentException("status invalido para consulta do gateway");
+        }
+
+        try {
+            List<PedidoEntity> pedidos = repository.findByStatus(status);
+            return pedidos.stream().map(PedidoGatewayMapper::toDomain).toList();
+        }  catch (Exception e) {
+            log.error("houve um error ao buscar todos os pedidos com status, error: {}", e.getMessage());
             throw new GatewayExceptionMongo("error ao buscar um pedido por id", e);
         }
     }

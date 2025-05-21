@@ -1,6 +1,7 @@
 package br.com.microservice.pedido.dto;
 
 import br.com.microservice.pedido.domain.value_objects.*;
+import br.com.microservice.pedido.gateway.dto.ProdutoDTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

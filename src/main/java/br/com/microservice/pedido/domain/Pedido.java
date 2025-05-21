@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Getter
 public class Pedido {
@@ -106,12 +107,13 @@ public class Pedido {
     }
 
     public BigDecimal getValorTotal() {
-        BigDecimal valorTotal = frete;
+        AtomicReference<BigDecimal> valorTotal = new AtomicReference<>(frete);
 
         produtos.forEach(produto -> {
-            valorTotal.add(produto.preco().multiply(new BigDecimal(produto.quantidade())));
+            BigDecimal subtotal = produto.preco().multiply(new BigDecimal(produto.quantidade()));
+            valorTotal.set(valorTotal.get().add(subtotal));
         });
 
-        return valorTotal;
+        return valorTotal.get();
     }
 }

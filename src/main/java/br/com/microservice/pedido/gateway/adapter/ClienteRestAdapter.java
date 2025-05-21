@@ -1,15 +1,11 @@
 package br.com.microservice.pedido.gateway.adapter;
 
 import br.com.microservice.pedido.gateway.ClienteGateway;
-import br.com.microservice.pedido.gateway.ProdutoGateway;
-import br.com.microservice.pedido.gateway.dto.OutputClienteDTO;
-import br.com.microservice.pedido.gateway.dto.OutputProdutoDTO;
+import br.com.microservice.pedido.gateway.dto.output.OutputClienteDTO;
 import br.com.microservice.pedido.gateway.exception.adapter.ProdutoRestAdapterExeception;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import java.time.Duration;
 
 
 @Component

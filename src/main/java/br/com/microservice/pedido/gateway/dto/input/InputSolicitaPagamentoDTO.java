@@ -1,4 +1,4 @@
-package br.com.microservice.pedido.gateway.dto;
+package br.com.microservice.pedido.gateway.dto.input;
 
 import br.com.microservice.pedido.domain.value_objects.MetodoPagamento;
 

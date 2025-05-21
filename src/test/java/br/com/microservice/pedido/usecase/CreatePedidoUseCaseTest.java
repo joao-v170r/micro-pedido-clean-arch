@@ -9,6 +9,9 @@ import br.com.microservice.pedido.gateway.ClienteGateway;
 import br.com.microservice.pedido.gateway.CrudPedidoGateway;
 import br.com.microservice.pedido.gateway.PagamentoGateway;
 import br.com.microservice.pedido.gateway.dto.*;
+import br.com.microservice.pedido.gateway.dto.input.InputSolicitaPagamentoDTO;
+import br.com.microservice.pedido.gateway.dto.output.OutputClienteDTO;
+import br.com.microservice.pedido.gateway.dto.output.OutputPagamentoDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -104,7 +108,7 @@ class CreatePedidoUseCaseTest {
         InputCreatePedidoDTO input = new InputCreatePedidoDTO(
                 clienteId,
                 LocalDateTime.now(),
-                Set.of("prod1"),
+                new HashMap<String, Integer>(),
                 new Endereco(
                         "27521-000",
                         "123",

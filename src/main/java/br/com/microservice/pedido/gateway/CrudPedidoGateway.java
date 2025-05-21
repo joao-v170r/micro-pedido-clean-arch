@@ -1,6 +1,7 @@
 package br.com.microservice.pedido.gateway;
 
 import br.com.microservice.pedido.domain.Pedido;
+import br.com.microservice.pedido.domain.value_objects.StatusPedido;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -13,4 +14,5 @@ public interface CrudPedidoGateway {
     Pedido save(Pedido pedido);
     void deleteById(String id);
     List<Pedido> findAll(Pageable page);
+    List<Pedido> findAllWithStatus(StatusPedido status);
 }

@@ -2,7 +2,7 @@ package br.com.microservice.pedido.gateway.adapter;
 
 import br.com.microservice.pedido.domain.value_objects.Endereco;
 import br.com.microservice.pedido.domain.value_objects.Telefone;
-import br.com.microservice.pedido.gateway.dto.OutputClienteDTO;
+import br.com.microservice.pedido.gateway.dto.output.OutputClienteDTO;
 import br.com.microservice.pedido.gateway.exception.adapter.ProdutoRestAdapterExeception;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

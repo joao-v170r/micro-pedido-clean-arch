@@ -1,7 +1,10 @@
 package br.com.microservice.pedido.gateway;
 
-import br.com.microservice.pedido.gateway.dto.OutputProdutoDTO;
+import br.com.microservice.pedido.gateway.dto.ProdutoDTO;
+import br.com.microservice.pedido.gateway.dto.output.OutputProdutoDTO;
+
+import java.util.List;
 
 public interface ProdutoGateway {
-    OutputProdutoDTO findById(String id);
+    List<ProdutoDTO> list(List<String> ids);
 }

@@ -20,6 +20,7 @@ import br.com.microservice.pedido.domain.value_objects.ProdutoPedido;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -41,11 +42,16 @@ class CreatePedidoControllerTest {
 
     @Test
     void deveCriarPedidoERetornar201() throws Exception {
+        HashMap<String, Integer> produtos = new HashMap<>();
+
+        produtos.put("prodMock", 2);
+        produtos.put("prodMock1", 2);
+
         // Arrange
         RequestCreatePedidoController request = new RequestCreatePedidoController(
                 "123",
                 LocalDateTime.now(),
-                Set.of("prod1", "prod2"),
+                produtos,
                 new Endereco("27521000", "123", 100, 100),
                 new BigDecimal("15.50"),
                 MetodoPagamento.PIX

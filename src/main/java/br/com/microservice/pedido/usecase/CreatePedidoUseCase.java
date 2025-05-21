@@ -5,12 +5,14 @@ import br.com.microservice.pedido.domain.value_objects.DadosCliente;
 import br.com.microservice.pedido.domain.value_objects.ProdutoPedido;
 import br.com.microservice.pedido.dto.PedidoDTO;
 import br.com.microservice.pedido.dto.usecase.InputCreatePedidoDTO;
-import br.com.microservice.pedido.gateway.ClienteGateway;
-import br.com.microservice.pedido.gateway.CrudPedidoGateway;
-import br.com.microservice.pedido.gateway.PagamentoGateway;
-import br.com.microservice.pedido.gateway.dto.InputSolicitaPagamentoDTO;
-import br.com.microservice.pedido.gateway.dto.OutputClienteDTO;
-import br.com.microservice.pedido.gateway.dto.OutputPagamentoDTO;
+import br.com.microservice.pedido.gateway.*;
+import br.com.microservice.pedido.gateway.dto.DebitoProdutoEstoqueDTO;
+import br.com.microservice.pedido.gateway.dto.ProdutoDTO;
+import br.com.microservice.pedido.gateway.dto.input.InputReduzirEstoqueDTO;
+import br.com.microservice.pedido.gateway.dto.input.InputSolicitaPagamentoDTO;
+import br.com.microservice.pedido.gateway.dto.output.OutputClienteDTO;
+import br.com.microservice.pedido.gateway.dto.output.OutputPagamentoDTO;
+import br.com.microservice.pedido.gateway.dto.output.OutputProdutoDTO;
 import br.com.microservice.pedido.usecase.mapper.PedidoMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,9 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -29,18 +29,18 @@ public class CreatePedidoUseCase {
 
     private final PagamentoGateway gatewayPagamento;
     private final ClienteGateway gatewayCliente;
-    /*private final ProdutoGateway gatewayProduto;*/
-    /*private final ProdutoGateway gatewayProduto;*/
+    private final EstoqueGateway gatewayEstoque;
+    private final ProdutoGateway gatewayProduto;
     private final CrudPedidoGateway gateway;
     private final ObjectMapper mapper;
 
     public PedidoDTO create(InputCreatePedidoDTO input) {
-        log.info("<<CREATE.PEDIDO>> inicio endpoint de criação de pedido para o cliente[{}]", input.idCliente());
+        log.info("<<CREATE.PEDIDO>> inicio endpoint de criação de pedido para o cliente[{}]", input.clienteId());
 
         Set<ProdutoPedido> produtoPedidos = new HashSet<>();
 
         log.info("<<CREATE.PEDIDO>> buscando dados de cliente");
-        OutputClienteDTO clienteDTO = gatewayCliente.findById(input.idCliente());
+        OutputClienteDTO clienteDTO = gatewayCliente.findById(input.clienteId());
         try {
             log.info("<<CREATE.PEDIDO>> dados de cliente recebido: {}", mapper.writeValueAsString(clienteDTO));
         } catch (Exception e) {
@@ -54,12 +54,21 @@ public class CreatePedidoUseCase {
         );
 
         log.info("<<CREATE.PEDIDO>> montando dados de produto");
-        input.produtos().forEach(idProduto -> {
-            /*OutputProdutoDTO produtoDTO = gatewayProduto.findById(idProduto);*/
+        List<String> idsProduto = new ArrayList<>();
+        List<DebitoProdutoEstoqueDTO> inputEstoque = new ArrayList<>();
+
+        input.produtos().forEach((id, quantidade) -> {
+            idsProduto.add(id);
+            inputEstoque.add(new DebitoProdutoEstoqueDTO(id, quantidade));
+        });
+
+        List<ProdutoDTO> produtos = gatewayProduto.list(idsProduto);
+
+        produtos.forEach(produto -> {
             produtoPedidos.add(new ProdutoPedido(
-                    "id",//produtoDTO.id(),
-                    BigDecimal.ONE,//produtoDTO.preco(),
-                    2//produtoDTO.quantidade()
+                    produto.sku(),//produtoDTO.id(),
+                    produto.preco(),//produtoDTO.preco(),
+                    input.produtos().get(produto.sku())//produtoDTO.quantidade()
             ));
         });
 
@@ -93,6 +102,9 @@ public class CreatePedidoUseCase {
         } catch (JsonProcessingException e) {
             log.info("<<CREATE.PEDIDO>> houve um error ao criar um json do retorno do pagamento");
         }
+
+        log.info("<<CREATE.PEDIDO>> reduzir");
+        gatewayEstoque.reduzir(new InputReduzirEstoqueDTO(inputEstoque));
 
         pedido.setReciboPagamento(outputPagamento.id());
 

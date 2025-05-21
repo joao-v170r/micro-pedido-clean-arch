@@ -12,7 +12,7 @@ public class PedidoGatewayMapper {
             entity.getMetodoPagamento(),
             entity.getFrete(),
             entity.getEndereco(),
-            entity.getStatusPedido(),
+            entity.getStatus(),
             new HashSet<>(entity.getProdutos()),
             entity.getDataCriacao(),
             entity.getCliente(),

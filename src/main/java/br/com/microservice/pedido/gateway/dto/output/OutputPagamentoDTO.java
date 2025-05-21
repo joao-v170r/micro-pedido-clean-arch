@@ -1,4 +1,8 @@
-package br.com.microservice.pedido.gateway.dto;
+package br.com.microservice.pedido.gateway.dto.output;
+
+import br.com.microservice.pedido.gateway.dto.MetodoPagamento;
+import br.com.microservice.pedido.gateway.dto.MoedaPagamento;
+import br.com.microservice.pedido.gateway.dto.StatusPagamento;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

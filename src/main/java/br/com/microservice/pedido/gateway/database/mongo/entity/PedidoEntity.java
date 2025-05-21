@@ -25,7 +25,7 @@ public class PedidoEntity {
     @Field("dt_cricao")
     private LocalDateTime dataCriacao;
     private List<ProdutoPedido> produtos;
-    private StatusPedido statusPedido;
+    private StatusPedido status;
     private Endereco endereco;
     private BigDecimal frete;
     @Field("metodo_pagamento")

@@ -46,7 +46,7 @@ class PedidoGatewayMapperTest {
         assertEquals(pedido.getCliente(), entity.getCliente());
         assertEquals(pedido.getDataCriacao(), entity.getDataCriacao());
         assertEquals(pedido.getProdutos().size(), entity.getProdutos().size());
-        assertEquals(pedido.getStatus(), entity.getStatusPedido());
+        assertEquals(pedido.getStatus(), entity.getStatus());
         assertEquals(pedido.getEnderecoEntrega(), entity.getEndereco());
         assertEquals(pedido.getFrete(), entity.getFrete());
         assertEquals(pedido.getMetodoPagamento(), entity.getMetodoPagamento());
@@ -81,7 +81,7 @@ class PedidoGatewayMapperTest {
         assertEquals(entity.getCliente(), domain.getCliente());
         assertEquals(entity.getDataCriacao(), domain.getDataCriacao());
         assertEquals(entity.getProdutos().size(), domain.getProdutos().size());
-        assertEquals(entity.getStatusPedido(), domain.getStatus());
+        assertEquals(entity.getStatus(), domain.getStatus());
         assertEquals(entity.getEndereco(), domain.getEnderecoEntrega());
         assertEquals(entity.getFrete(), domain.getFrete());
         assertEquals(entity.getMetodoPagamento(), domain.getMetodoPagamento());

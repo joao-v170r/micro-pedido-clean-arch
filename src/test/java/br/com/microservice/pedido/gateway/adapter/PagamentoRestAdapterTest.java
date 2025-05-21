@@ -1,6 +1,8 @@
 package br.com.microservice.pedido.gateway.adapter;
 
 import br.com.microservice.pedido.gateway.dto.*;
+import br.com.microservice.pedido.gateway.dto.input.InputSolicitaPagamentoDTO;
+import br.com.microservice.pedido.gateway.dto.output.OutputPagamentoDTO;
 import br.com.microservice.pedido.gateway.exception.adapter.ProdutoRestAdapterExeception;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
