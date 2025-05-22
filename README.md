@@ -1,4 +1,4 @@
-# Micro-Pedido-Clean-Arch
+# Tech Challenge 04 - Pedido
 
 - Introdução
 - Funcionalidades
@@ -103,5 +103,5 @@ Foram implementados testes unitários e de integração para garantir a qualidad
 A cobertura de código atual pode ser visualizada na imagem abaixo.
 
 <div align="center">
-    <img src="src/main/resources/img/teste.png" alt="Cobertura de Testes" width="1466px" height="268px">
+    <img src="src/main/resources/img/teste.png" alt="Cobertura de Testes" width="1013px" height="351px">
 </div>
