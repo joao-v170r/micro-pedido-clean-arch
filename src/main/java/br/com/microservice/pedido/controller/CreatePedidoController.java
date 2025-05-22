@@ -32,7 +32,7 @@ public class CreatePedidoController {
         return ResponseEntity.status(HttpStatusCode.valueOf(201)).body(
                 useCase.create(
                     new InputCreatePedidoDTO(
-                            request.idCliente(),
+                            request.clienteId(),
                             request.dataCriacao(),
                             request.produtos(),
                             request.enderecoEntrega(),
