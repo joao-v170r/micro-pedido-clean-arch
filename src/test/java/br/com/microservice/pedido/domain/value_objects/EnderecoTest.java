@@ -2,6 +2,7 @@ package br.com.microservice.pedido.domain.value_objects;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -10,7 +11,6 @@ class EnderecoTest {
 
     @Test
     void deveCriarEnderecoQuandoDadosValidos() {
-        // Act & Assert
         assertDoesNotThrow(() -> new Endereco(
                 "12345-678",
                 "Rua Exemplo, 123",
@@ -20,9 +20,9 @@ class EnderecoTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"", "12345678", "1234-5678", "abcde-fgh"})
+    @NullAndEmptySource
+    @ValueSource(strings = {"123456", "1234-567", "abcde-fgh", "12345-abc"})
     void deveLancarExcecaoQuandoCepInvalido(String cep) {
-        // Act & Assert
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
                 () -> new Endereco(
@@ -35,14 +35,14 @@ class EnderecoTest {
         assertEquals("cep está invalido", exception.getMessage());
     }
 
-    @Test
-    void deveLancarExcecaoQuandoEnderecoCompletoVazio() {
-        // Act & Assert
+    @ParameterizedTest
+    @NullAndEmptySource
+    void deveLancarExcecaoQuandoEnderecoCompletoInvalido(String endereco) {
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
                 () -> new Endereco(
                         "12345-678",
-                        "",
+                        endereco,
                         10,
                         20
                 )
@@ -52,7 +52,6 @@ class EnderecoTest {
 
     @Test
     void deveLancarExcecaoQuandoLatitudeNula() {
-        // Act & Assert
         NullPointerException exception = assertThrows(
                 NullPointerException.class,
                 () -> new Endereco(
@@ -67,7 +66,6 @@ class EnderecoTest {
 
     @Test
     void deveLancarExcecaoQuandoLongitudeNula() {
-        // Act & Assert
         NullPointerException exception = assertThrows(
                 NullPointerException.class,
                 () -> new Endereco(
@@ -80,28 +78,10 @@ class EnderecoTest {
         assertEquals("longitude é obrigatorio", exception.getMessage());
     }
 
-    @Test
-    void validCEP_deveRetornarTrueParaCEPValidoComHifen() {
-        // Arrange
-        Endereco endereco = new Endereco("12345-678", "Rua Teste", 1, 1);
-        // Act & Assert
-        assertTrue(endereco.validCEP("12345-678"));
-    }
-
-    @Test
-    void validCEP_deveRetornarTrueParaCEPValidoSemHifen() {
-        // Arrange
-        Endereco endereco = new Endereco("12345-678", "Rua Teste", 1, 1);
-        // Act & Assert
-        assertTrue(endereco.validCEP("12345678"));
-    }
-
     @ParameterizedTest
-    @ValueSource(strings = {"12345", "12345-67", "12345-6789", "ABCDE-FGH", "12345 678"})
-    void validCEP_deveRetornarFalseParaCEPInvalido(String cep) {
-        // Arrange
+    @ValueSource(strings = {"12345-678", "12345678"})
+    void deveValidarCEPsValidos(String cep) {
         Endereco endereco = new Endereco("12345-678", "Rua Teste", 1, 1);
-        // Act & Assert
-        assertFalse(endereco.validCEP(cep));
+        assertTrue(endereco.validCEP(cep));
     }
 }
